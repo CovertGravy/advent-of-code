@@ -1,7 +1,7 @@
-import { sumReducer, sortCompareFn } from '../utils/common'
+import { sumReducer, sortCompareFn, getInputAsText } from '../utils/common'
 
 async function getCalorieList() {
-  const input = await fetch('../inputs/01.txt').then(r => r.text());
+  const input = await getInputAsText('01');
   const calorieList = input.split('\n');
   return calorieList;
 }
