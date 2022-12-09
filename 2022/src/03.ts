@@ -20,10 +20,21 @@ function halfIt(line: string) {
   return [firstHalf, secondHalf];
 }
 
-function getCommonItem(line1: string[], line2: string[]) {
+function getCommonItem2(line1: string[], line2: string[]) {
   let commonItem = '';
   line1.forEach(char => {
     if (line2.includes(char)) commonItem = char;
+  })
+  return commonItem as TCharacter | null;
+}
+
+function getCommonItem3(line1: string[], line2: string[], line3: string[]) {
+  let commonItem = '';
+  line1.forEach(char => {
+    if (line2.includes(char)) commonItem += char;
+  });
+  line3.forEach(char => {
+    if (commonItem.includes(char)) commonItem = char;
   })
   return commonItem as TCharacter | null;
 }
@@ -32,7 +43,7 @@ async function solve01() {
   const ruckSackList = await getRucksackList();
   const commonItemList = ruckSackList.map(ruckSack => {
     const [firstHalf, secondHalf] = halfIt(ruckSack)
-    const commonItem = getCommonItem(firstHalf, secondHalf);
+    const commonItem = getCommonItem2(firstHalf, secondHalf);
     return commonItem;
   })
   const commonItemPriorityList = commonItemList.map(char => {
@@ -41,7 +52,24 @@ async function solve01() {
   return commonItemPriorityList.reduce(sumReducer);
 }
 
-async function solve02() {}
+async function solve02() {
+  const ruckSackList = await getRucksackList();
+  const commonItemList = ruckSackList
+    .map((ruckSack, index) => {
+      if (index % 3) return null;
+      const group = [ruckSack, ruckSackList[index + 1], ruckSackList[index + 2]];
+      const commonItem = getCommonItem3(
+        [...group[0]],
+        [...group[1]],
+        [...group[2]],
+      );
+      return commonItem;
+    });
+  const commonItemPriorityList = commonItemList.map(char => {
+    return char ? getItemPriority(char) : 0;
+  });
+  return commonItemPriorityList.reduce(sumReducer);
+}
 
 export default {
   solve01,
