@@ -29,7 +29,25 @@ async function solve01() {
   return fullyContainedPairCount;
 }
 
-async function solve02() { }
+async function solve02() {
+  const assignmentPairList = await getAssignmentPairList();
+  let overlapPairCount = 0;
+  assignmentPairList.forEach(pairs => {
+    const [pair1, pair2] = pairs.split(',');
+    let [
+      [pair1Left, pair1Right],
+      [pair2Left, pair2Right]
+    ] = [pair1, pair2].map(pair => pair.split('-').map(Number));
+    if (pair1Left - pair2Left > 0) {
+      [pair1Left, pair2Left] = [pair2Left, pair1Left];
+      [pair1Right, pair2Right] = [pair2Right, pair1Right];
+    }
+    if (!(pair1Right < pair2Left)) {
+      overlapPairCount++;
+    }
+  })
+  return overlapPairCount;
+}
 
 export default {
   solve01,
