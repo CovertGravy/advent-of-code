@@ -19,7 +19,20 @@ async function solve01() {
   return markerIndex;
 }
 
-async function solve02() {}
+async function solve02() {
+  const dsb = await getDataStreamBuffer();
+  let markerFound = false;
+  let markerIndex = 0;
+  for (let i = 0; i < dsb.length; i++) {
+    if (markerFound) break;
+    const _set = new Set([...(1e13+'')].map((_, j) => dsb[i+j]));
+    if (_set.size === 14) {
+      markerFound = true;
+      markerIndex = i + 14;
+    }
+  }
+  return markerIndex;
+}
 
 export default {
   solve01,
