@@ -53,7 +53,7 @@ async function getCommands() {
   return commands;
 }
 
-function processCommands(commands: TCommand[], cratesData: UpperCaseCharacter[][]) {
+function processCommands(commands: TCommand[], cratesData: UpperCaseCharacter[][], crateMover = 9000) {
   commands.forEach(command => {
     const { commandType, crateCount, stackIndexStart, stackIndexEnd } = command;
     if (commandType === 'move') {
@@ -63,7 +63,8 @@ function processCommands(commands: TCommand[], cratesData: UpperCaseCharacter[][
         poppedItems.push(cratesData[stackIndexStart].pop()!);
         i--;
       }
-      cratesData[stackIndexEnd].push(...poppedItems)
+      if (crateMover === 9001) poppedItems.reverse();
+      cratesData[stackIndexEnd].push(...poppedItems);
     }
   })
 }
@@ -80,7 +81,17 @@ async function solve01() {
   return topCratesInEachStack.join('');
 }
 
-async function solve02() {}
+async function solve02() {
+  const cratesData =  await getCratesData();
+  const commands = await getCommands();
+  processCommands(commands, cratesData, 9001);
+  const topCratesInEachStack = cratesData
+    .filter((_, index) => index !== 0)
+    .map((stack) => {
+      return stack[stack.length - 1];
+    })
+  return topCratesInEachStack.join('');
+}
 
 export default {
   solve01,
